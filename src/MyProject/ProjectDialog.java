@@ -7,22 +7,29 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 public class ProjectDialog extends JDialog {
 	private JButton btn1, btn2, btn3, btn4, btn5;
 	private JButton[] menuBtn = new JButton[5];
 	private JPanel menuL, pNorth, pSouth, subMenuContainer;
 	private JLabel modeJl = new JLabel();
+	private JButton back = new JButton("메인화면 돌아가기",new ImageIcon("images/back.png"));
 	private JScrollPane pCenter;
 	private JButton[] subBtn = new JButton[9];
 	private String[] btnname = { "재고현황조회", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
@@ -53,22 +60,32 @@ public class ProjectDialog extends JDialog {
 		if (frame.ck.isSelected()) {
 			modeJl.setText("관리자 모드");
 		} else {
-//			modeJl.setText("작업자 모드");
 			String name = "";
 			try {
 				rs = frame.stmt.executeQuery("select worker_name from workerid where id = '" + loginid + "'");
-				while(rs.next()) {
-					name= rs.getString("worker_name");
+				while (rs.next()) {
+					name = rs.getString("worker_name");
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			modeJl.setText(name+"님 환영합니다!");
+			modeJl.setText(name + "님 환영합니다!");
 		}
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);
 		modeJl.setLocation(90, 20);
+		back.setLocation(75,150);
+		back.setSize(200,40);
+		back.setBorderPainted(false);
+		back.setContentAreaFilled(false);
+		back.setFocusPainted(false);
+		back.setOpaque(false);
+		back.setHorizontalAlignment(SwingConstants.LEFT);
+		
+//		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+//		modeJl.setSize(200, 50);
+//		modeJl.setLocation(90, 90);
 
 		pNorth = new JPanel();
 		menuL = new JPanel();
@@ -128,17 +145,21 @@ public class ProjectDialog extends JDialog {
 		subMenuContainer = new JPanel();
 		subMenuContainer.setSize(900, 500);
 		subMenuContainer.setLocation(350, 200);
+		// 초기 화면 미완료건 카운트 창
+		defPanel();
+		back.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				subMenuContainer.removeAll();
+				defPanel();
+			}
+		});
 		
-		
-		
-		
-		
-		
-		
-
 		add(menuL);
 		add(new textPanel());
 		add(modeJl);
+		add(back);
 		setSize(1500, 900);
 
 		addWindowListener(new WindowAdapter() {
@@ -160,6 +181,7 @@ public class ProjectDialog extends JDialog {
 	private class ActionHandlerR implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+//			subMenuContainer.removeAll();
 			for (int i = 0; i < subBtn.length; i++) {
 				if (subBtn[i] == e.getSource()) {
 					if (i == 0) {
@@ -352,7 +374,7 @@ public class ProjectDialog extends JDialog {
 					if (powout) {
 						for (int i = 5; i < 7; i++) {
 							pNorth.add(subBtn[i]);
-							
+
 						}
 					} else {
 						pNorth.add(subBtn[6]);
@@ -410,6 +432,46 @@ public class ProjectDialog extends JDialog {
 			pNorth.remove(subBtn[8]);
 		}
 	}
+
+	public void defPanel() {
+		JLabel cal1 = new JLabel(new ImageIcon("images/cal2.png"));
+		JLabel cal2 = new JLabel(new ImageIcon("images/cal2.png"));
+		String in = null;
+		String out = null;
+		try {
+			rs = frame.stmt.executeQuery(
+					"SELECT COUNT(CASE WHEN oder_kind='입고' THEN 1 END AND CASE WHEN complete = 'yet' THEN 1 END) AS cnt FROM iohistory");
+			while (rs.next())
+				in = rs.getString("cnt");
+			rs = frame.stmt.executeQuery(
+					"SELECT COUNT(CASE WHEN oder_kind='출고' THEN 1 END AND CASE WHEN complete = 'yet' THEN 1 END) AS cnt FROM iohistory");
+			while (rs.next())
+				out = rs.getString("cnt");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JLabel yetinJl = new JLabel(in);
+		JLabel yetoutJl = new JLabel(out);
+		yetinJl.setFont(new Font("맑음 고딕", Font.BOLD, 30));
+		yetoutJl.setFont(new Font("맑음 고딕", Font.BOLD, 30));
+		JPanel nP = new JPanel();
+		JPanel cP = new JPanel();
+		nP.add(cal1);
+		nP.add(new JLabel("미완료 입고 작업 :"));
+		nP.add(yetinJl);
+		nP.add(new JLabel(" 건"));
+		nP.add(cal2);
+		nP.add(new JLabel("미완료 출고 작업 :"));
+		nP.add(yetoutJl);
+		nP.add(new JLabel(" 건"));
+		subMenuContainer.setLayout(new BorderLayout());
+		subMenuContainer.add(nP, BorderLayout.NORTH);
+		subMenuContainer.add(cP, BorderLayout.CENTER);
+		add(subMenuContainer);
+		validate();
+		repaint();
+	}
 }
 
 class textPanel extends JPanel {
@@ -424,8 +486,10 @@ class textPanel extends JPanel {
 		g.setFont(new Font("Arial", Font.ITALIC, 40));
 		g.drawString("This too shall pass.", 100, 70);
 		g.setColor(Color.BLACK);
-		g.setFont(new Font("휴먼매직체", Font.ITALIC, 20));
-		g.drawString("– Et hoc transibit", 540, 100);
+		g.setFont(new Font("휴먼매직체", Font.BOLD, 30));
+		g.drawString("  Et hoc transibit", 540, 100);
 	}
 
 }
+
+
