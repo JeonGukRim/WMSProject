@@ -97,7 +97,7 @@ public class LoginUi extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
+
 				if (loginTf.getText().equals(id) && pwTf.getText().equals(pw)) {
 					setVisible(false);
 					dialog.setVisible(true);
@@ -105,7 +105,7 @@ public class LoginUi extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
 				}
-				
+
 			}
 		});
 

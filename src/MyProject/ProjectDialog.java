@@ -53,18 +53,18 @@ public class ProjectDialog extends JDialog {
 		if (frame.ck.isSelected()) {
 			modeJl.setText("관리자 모드");
 		} else {
-			modeJl.setText("작업자 모드");
-//			String name = "";
-//			try {
-//				rs = frame.stmt.executeQuery("select worker_name from workerid where id = '" + loginid + "'");
-//				while(rs.next()) {
-//					name= rs.getString("worker_name");
-//				}
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			modeJl.setText(name+"님 환영합니다!");
+//			modeJl.setText("작업자 모드");
+			String name = "";
+			try {
+				rs = frame.stmt.executeQuery("select worker_name from workerid where id = '" + loginid + "'");
+				while(rs.next()) {
+					name= rs.getString("worker_name");
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			modeJl.setText(name+"님 환영합니다!");
 		}
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);

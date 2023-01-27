@@ -221,79 +221,85 @@ public class SubBtnListener1 extends JFrame {
 								int realnum = 0;
 								try {
 									realnum = Integer.parseInt(realinNumTf.getText());
+									
+									try {
+										// 입출고 이력에 실제 입고수량 날짜 작업자 id 저장
+										if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
+											pstmtUpdate = l.conn.prepareStatement(
+													"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
+											pstmtUpdate.setInt(1, realnum);
+											pstmtUpdate.setString(2, "over"); // 작업끝났으면 오버로 표시
+											pstmtUpdate.setString(3, loginid);
+											pstmtUpdate.setString(4, formatedNow);
+											pstmtUpdate.setString(5, select);
+											pstmtUpdate.executeUpdate();
+
+										} else {
+											JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러",
+													JOptionPane.ERROR_MESSAGE);
+										}
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+
+									try {
+										// 리스트에 같은 제품과 재고위치에 재고가 존재한다면 재고 추가
+										if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
+											rs = l.stmt.executeQuery(
+													"select * from listdb  where sku_location = '" + skuLocationTf.getText()
+															+ "' and sku_code='" + skuCodeJl.getText() + "'");
+											if (rs.isBeforeFirst()) {
+												int num = 0;
+												pstmtUpdate = l.conn.prepareStatement(
+														"update listdb set sku_finalnum = ? where sku_location = ? and sku_code = ?");
+												while (rs.next()) {
+													num = rs.getInt("sku_finalnum");
+												}
+
+												num += realnum;
+												pstmtUpdate.setInt(1, num);
+												pstmtUpdate.setString(2, skuLocationTf.getText());
+												pstmtUpdate.setString(3, skuCodeJl.getText());
+												pstmtUpdate.executeUpdate();
+											} else {
+												pstmtInsert = l.conn.prepareStatement(
+														"insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) values( ?,? ,"
+																+ "? ,?,?)");
+//											int num1 = Integer.parseInt(realinNumTf.getText());
+												pstmtInsert.setString(1, skuCodeJl.getText());
+												pstmtInsert.setString(2, skuNamedata.getText());
+												pstmtInsert.setString(3, kinddata.getText());
+												pstmtInsert.setString(4, skuLocationTf.getText());
+												pstmtInsert.setInt(5, realnum);
+												pstmtInsert.executeUpdate();
+											}
+
+											orderCombo.removeAll();
+											skuCodeJl.setText("");
+											skuNamedata.setText("");
+											kinddata.setText("");
+											indata.setText("");
+											realinNumTf.setText("");
+											skuLocationTf.setText("");
+											resetP();
+											locationSetting1();
+											JOptionPane.showMessageDialog(null, "입고완료 되였습니다", "알림", 1);
+										}
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									
+									
+									
+									
 								} catch (Exception e1) {
 									e1.printStackTrace();
 									JOptionPane.showMessageDialog(null, "숫자를 확인해주세요", "알림", 1);
 								}
 
-								try {
-									// 입출고 이력에 실제 입고수량 날짜 작업자 id 저장
-									if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
-										pstmtUpdate = l.conn.prepareStatement(
-												"update  iohistory set realnum = ?,complete = ?,worker_id = ?,work_date = ? where ordernum =?");
-										pstmtUpdate.setInt(1, realnum);
-										pstmtUpdate.setString(2, "over"); // 작업끝났으면 오버로 표시
-										pstmtUpdate.setString(3, loginid);
-										pstmtUpdate.setString(4, formatedNow);
-										pstmtUpdate.setString(5, select);
-										pstmtUpdate.executeUpdate();
-
-									} else {
-										JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러",
-												JOptionPane.ERROR_MESSAGE);
-									}
-								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-
-								try {
-									// 리스트에 같은 제품과 재고위치에 재고가 존재한다면 재고 추가
-									if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
-										rs = l.stmt.executeQuery(
-												"select * from listdb  where sku_location = '" + skuLocationTf.getText()
-														+ "' and sku_code='" + skuCodeJl.getText() + "'");
-										if (rs.isBeforeFirst()) {
-											int num = 0;
-											pstmtUpdate = l.conn.prepareStatement(
-													"update listdb set sku_finalnum = ? where sku_location = ? and sku_code = ?");
-											while (rs.next()) {
-												num = rs.getInt("sku_finalnum");
-											}
-
-											num += realnum;
-											pstmtUpdate.setInt(1, num);
-											pstmtUpdate.setString(2, skuLocationTf.getText());
-											pstmtUpdate.setString(3, skuCodeJl.getText());
-											pstmtUpdate.executeUpdate();
-										} else {
-											pstmtInsert = l.conn.prepareStatement(
-													"insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) values( ?,? ,"
-															+ "? ,?,?)");
-//										int num1 = Integer.parseInt(realinNumTf.getText());
-											pstmtInsert.setString(1, skuCodeJl.getText());
-											pstmtInsert.setString(2, skuNamedata.getText());
-											pstmtInsert.setString(3, kinddata.getText());
-											pstmtInsert.setString(4, skuLocationTf.getText());
-											pstmtInsert.setInt(5, realnum);
-											pstmtInsert.executeUpdate();
-										}
-
-										orderCombo.removeAll();
-										skuCodeJl.setText("");
-										skuNamedata.setText("");
-										kinddata.setText("");
-										indata.setText("");
-										realinNumTf.setText("");
-										skuLocationTf.setText("");
-										resetP();
-										locationSetting1();
-										JOptionPane.showMessageDialog(null, "입고완료 되였습니다", "알림", 1);
-									}
-								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+								
 							}
 
 						});
