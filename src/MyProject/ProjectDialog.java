@@ -327,16 +327,17 @@ public class ProjectDialog extends JDialog {
 				// 관리자 모드 아닐시 권한 받은 메뉴만 추가
 				else {
 					rs = frame.stmt.executeQuery("select * from workerid where id = '" + loginid + "'");
-					boolean powin = true;
+					boolean powout = true;
 					while (rs.next()) {
-						powin = rs.getBoolean("pow_inorder");
+						powout = rs.getBoolean("pow_outorder");
 					}
-					if (powin) {
-						pNorth.add(subBtn[6]);
-					} else {
+					if (powout) {
 						for (int i = 5; i < 7; i++) {
 							pNorth.add(subBtn[i]);
+							
 						}
+					} else {
+						pNorth.add(subBtn[6]);
 					}
 				}
 
