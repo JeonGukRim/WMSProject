@@ -79,32 +79,33 @@ public class LoginUi extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				String mode = null;
+				String id = null;
+				String pw = null;
+				if (ck.isSelected())
+					mode = "masterid";
+				else
+					mode = "workerid";
+				dialog = new ProjectDialog(LoginUi.this, "로그인 성공", loginTf.getText());
 				try {
-					boolean tof = true;
-					if (ck.isSelected()) {
-						rs = stmt.executeQuery("select * from masterid where id = '"+loginTf.getText() +"'");
-					} else {
-						rs = stmt.executeQuery("select * from workerid where id = '"+loginTf.getText() +"'");
-					}
-					dialog = new ProjectDialog(LoginUi.this, "로그인 성공", loginTf.getText());
+					rs = stmt.executeQuery("select * from " + mode + " where id = '" + loginTf.getText() + "'");
 					while (rs.next()) {
-						if (loginTf.getText().equals(rs.getString("id")) && pwTf.getText().equals(rs.getString("pw"))) {
-							tof = true;
-						} else {
-							tof = false;
-						}
+						id = rs.getString("id");
+						pw = rs.getString("pw");
 					}
-					if (tof) {
-						setVisible(false);
-						dialog.setVisible(true);
-					} else {
-						JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
-					}
-
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				
+				if (loginTf.getText().equals(id) && pwTf.getText().equals(pw)) {
+					setVisible(false);
+					dialog.setVisible(true);
+
+				} else {
+					JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
+				}
+				
 			}
 		});
 
