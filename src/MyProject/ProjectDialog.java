@@ -39,6 +39,7 @@ public class ProjectDialog extends JDialog {
 	private static boolean expand2 = false;
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
+	private JButton logoutBtn = new JButton("로그아웃",new ImageIcon("images/logout1.png"));
 	private String loginid;
 	public LoginUi frame;
 	private LoginUi l;
@@ -160,7 +161,23 @@ public class ProjectDialog extends JDialog {
 		add(new textPanel());
 		add(modeJl);
 		add(back);
+		logoutBtn.setLocation(1200,150);
+		logoutBtn.setSize(200,40);
+		logoutBtn.setBorderPainted(false);
+		logoutBtn.setContentAreaFilled(false);
+		logoutBtn.setFocusPainted(false);
+		logoutBtn.setOpaque(false);
+		logoutBtn.setHorizontalAlignment(SwingConstants.LEFT);
+		add(logoutBtn);
 		setSize(1500, 900);
+		logoutBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				frame.setVisible(true);
+				ProjectDialog.this.setVisible(false);
+			}
+		});
 
 		addWindowListener(new WindowAdapter() {
 			@Override
