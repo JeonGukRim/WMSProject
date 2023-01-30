@@ -52,7 +52,7 @@ public class SubBtnListener extends JFrame {
 	private JTextField searchTf2 = new JTextField(20);
 	private JButton searchBtn = new JButton("검색");
 	private JButton memoupBtn = new JButton("메모수정");
-	private JButton excelBtn = new JButton("엑셀테스트");
+	private JButton excelBtn = new JButton("리스트 다운로드");
 	private JTextField memoupTf = new JTextField(20);
 	private JPanel upPanel = new JPanel();
 	private PreparedStatement pstmtUpdate = null;
@@ -114,19 +114,18 @@ public class SubBtnListener extends JFrame {
 			});
 			
 			excelBtn.addActionListener(new ActionListener() {
-				
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(ActionEvent e) {  //출력완료후 알림이 필요함
 					// TODO Auto-generated method stub
-					File f = new File("data.xls");
+					File f = new File("data.xls"); //출력 위치 
 					String[] str = {"SKU번호", "제품명", "분류", "재고위치", "수량", "메모"};
 					//파일객체는 파일에대한 정보만 넘겨주는거기 때문에 예외처리 할필요 없음;
 					try{
 						WritableWorkbook wb = Workbook.createWorkbook(f);
-						WritableSheet s1 = wb.createSheet("output data", 0);
+						WritableSheet s1 = wb.createSheet("output data", 0); //시트명
 						
 						for(int i = 0; i < str.length; i++){
-							Label label = new Label(i, 0, str[i]);
+							Label label = new Label(i, 0, str[i]);       //카테고리
 							s1.addCell(label);
 //							Label label1 = new Label(1, i, "데이터.." + i);
 //							s1.addCell(label1);
@@ -135,7 +134,7 @@ public class SubBtnListener extends JFrame {
 						int j = 1;
 						rs = l.stmt.executeQuery("select * from listdb order by sku_code");
 						while (rs.next()) {
-							Label sku_code = new Label(i++, j, rs.getString("sku_code"));
+							Label sku_code = new Label(i++, j, rs.getString("sku_code"));  //i는각 셀 j행 
 							s1.addCell(sku_code);									
 							Label sku_name = new Label(i++, j, rs.getString("sku_name"));
 							s1.addCell(sku_name);									
@@ -152,6 +151,7 @@ public class SubBtnListener extends JFrame {
 						}
 						wb.write();		//반드시 적어줘야 엑셀에 적용이 됨;
 						wb.close();
+						JOptionPane.showMessageDialog(null, "엑셀 다운로드 완료 되였습니다", "알림", 1);
 					} catch(Exception e2){
 						System.out.println("Err : " + e2.getMessage());
 					}
