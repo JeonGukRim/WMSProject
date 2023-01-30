@@ -29,19 +29,11 @@ public class KindPieChart extends JFrame {
 		this.jp = jp;
 		jp.setLayout(new BorderLayout());
 		jp.add(panel);
-//		panel.setSize(400,400);
-		
-//		jp.setLayout(null);
-//		jp.setLocation(800, 900);
-//		setContentPane(panel);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setSize(400, 400);
-//		setVisible(true);
 	}
 
 	class MyPanel extends JPanel {
 		private int sum = 0;
-		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW, Color.GRAY, Color.CYAN, Color.ORANGE,
+		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW, Color.PINK, Color.CYAN, Color.ORANGE,
 				Color.GREEN };
 		private double start = 0;
 		private double over = 0;
@@ -49,7 +41,6 @@ public class KindPieChart extends JFrame {
 		public MyPanel() {
 			dbclass(); // db연결
 			allData(); // 데이터 받아오기
-			// 총 수량 합계;
 			for (int i = 0; i < data1.size(); i++) {
 				sum += data2.get(i);
 			}
@@ -57,21 +48,21 @@ public class KindPieChart extends JFrame {
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			int n = 0;
-			int m = 0;
-			int o = 0;
-			int p = 0;
+			int n = 0; //사격형 간격 조절
+			int m = 0; //폰트 간격 조절
+			int o = 0; //사격형 길이 초과시 줄바꿈
+			int p = 0; //폰트 길이 초과시 줄바꿈
 			for (int i = 0; i < data1.size(); i++) {
 				over = ((double) data2.get(i) / (double) sum * 360);
 				g.setColor(color[i]);
-				g.fillRect(n, 250 + o, 15, 15); // 사각형
-				g.fillArc(100, 0, 200, 200, (int) start, (int) over);
+				g.fillRect(n, 310 + o, 15, 15); // 사각형
+				g.fillArc(100, 0, 300, 300, (int) start, (int) over);
 				n += 130;
 				start += over;
 				g.setColor(Color.black);
 				g.setFont(new Font("맑음 고딕", Font.BOLD, 14));
-				g.drawString(data1.get(i).toString(), 30 + m, 260 + p);
-				g.drawString(data2.get(i).toString(), 100+m,260+p);
+				g.drawString(data1.get(i).toString(), 30 + m, 320 + p);
+				g.drawString(data2.get(i).toString(), 100+m,320+p);
 				m += 127;
 				if (n > 400) {
 					o += 50;
