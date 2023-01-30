@@ -176,6 +176,8 @@ public class ProjectDialog extends JDialog {
 				// TODO Auto-generated method stub
 				frame.setVisible(true);
 				ProjectDialog.this.setVisible(false);
+//				frame.removeAll();
+//				repaint();
 			}
 		});
 
