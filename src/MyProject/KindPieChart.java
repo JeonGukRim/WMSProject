@@ -64,18 +64,23 @@ public class KindPieChart extends JFrame {
 			for (int i = 0; i < data1.size(); i++) {
 				over = ((double) data2.get(i) / (double) sum * 360);
 				g.setColor(color[i]);
-				g.fillRect(n, 250 + o, 40, 15);
+				g.fillRect(n, 250 + o, 15, 15); // 사각형
 				g.fillArc(100, 0, 200, 200, (int) start, (int) over);
 				n += 130;
 				start += over;
 				g.setColor(Color.black);
 				g.setFont(new Font("맑음 고딕", Font.BOLD, 14));
-				g.drawString(data1.get(i).toString(), 50 + m, 260 + p);
+				g.drawString(data1.get(i).toString(), 30 + m, 260 + p);
+				g.drawString(data2.get(i).toString(), 100+m,260+p);
 				m += 127;
 				if (n > 400) {
-					o = 50;
-					p = 50;
+					o += 50;
+					p += 50;
+					n = 0;
+					m = 0 ;
+					
 				}
+				repaint();
 			}
 		}
 	}
