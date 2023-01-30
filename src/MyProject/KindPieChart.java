@@ -55,7 +55,7 @@ public class KindPieChart extends JFrame {
 			for (int i = 0; i < data1.size(); i++) {
 				over = ((double) data2.get(i) / (double) sum * 360);
 				g.setColor(color[i]);
-				g.fillRect(n, 310 + o, 15, 15); // 사각형
+				g.fillOval(n, 310 + o, 15, 15); // 사각형
 				g.fillArc(100, 0, 300, 300, (int) start, (int) over);
 				n += 130;
 				start += over;
