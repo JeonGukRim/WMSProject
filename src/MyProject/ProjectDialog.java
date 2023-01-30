@@ -469,6 +469,9 @@ public class ProjectDialog extends JDialog {
 		subMenuContainer.add(nP, BorderLayout.NORTH);
 		subMenuContainer.add(cP, BorderLayout.CENTER);
 		add(subMenuContainer);
+		//파이차트 추가
+		KindPieChart pie = new KindPieChart(cP);
+		
 		validate();
 		repaint();
 	}

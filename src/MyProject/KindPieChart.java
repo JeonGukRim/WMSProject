@@ -1,19 +1,15 @@
 package MyProject;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.image.ImageObserver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.AttributedCharacterIterator;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -25,23 +21,30 @@ public class KindPieChart extends JFrame {
 	private ResultSet rs = null;
 	private Vector data1 = new Vector();
 	private Vector<Integer> data2 = new Vector();
-	private Vector result;
+//	private Vector result;
 	private MyPanel panel = new MyPanel();
+	private JPanel jp =new JPanel();
 
-	public KindPieChart() {
-		setContentPane(panel);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(500, 2020);
-		setVisible(true);
+	public KindPieChart(JPanel jp){
+		this.jp = jp;
+		jp.setLayout(new BorderLayout());
+		jp.add(panel);
+//		panel.setSize(400,400);
+		
+//		jp.setLayout(null);
+//		jp.setLocation(800, 900);
+//		setContentPane(panel);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setSize(400, 400);
+//		setVisible(true);
 	}
 
 	class MyPanel extends JPanel {
 		private int sum = 0;
 		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW, Color.GRAY, Color.CYAN, Color.ORANGE,
 				Color.GREEN };
-		private int start = 0;
-		private int over = 0;
-		private Graphics g;
+		private double start = 0;
+		private double over = 0;
 
 		public MyPanel() {
 			dbclass(); // db연결
@@ -50,19 +53,30 @@ public class KindPieChart extends JFrame {
 			for (int i = 0; i < data1.size(); i++) {
 				sum += data2.get(i);
 			}
-			// 첫 품목 차트 비율 계산
-			for (int i = 0; i < data1.size(); i++) {
-				over = ((data2.get(i) / sum) * 360);
-				paintComponent(g, color[i], start, over);
-				start += over;
-			}
-
 		}
 
-		public void paintComponent(Graphics g, Color color, int start, int over) {
+		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			g.setColor(color);
-			g.fillArc(0, 0, 100, 100, start, over);
+			int n = 0;
+			int m = 0;
+			int o = 0;
+			int p = 0;
+			for (int i = 0; i < data1.size(); i++) {
+				over = ((double) data2.get(i) / (double) sum * 360);
+				g.setColor(color[i]);
+				g.fillRect(n, 250 + o, 40, 15);
+				g.fillArc(100, 0, 200, 200, (int) start, (int) over);
+				n += 130;
+				start += over;
+				g.setColor(Color.black);
+				g.setFont(new Font("맑음 고딕", Font.BOLD, 14));
+				g.drawString(data1.get(i).toString(), 50 + m, 260 + p);
+				m += 127;
+				if (n > 400) {
+					o = 50;
+					p = 50;
+				}
+			}
 		}
 	}
 
@@ -102,7 +116,7 @@ public class KindPieChart extends JFrame {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new KindPieChart();
+//		new KindPieChart();
 	}
 
 }
