@@ -1,6 +1,7 @@
 package MyProject;
 
 import java.awt.BorderLayout;
+
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -25,7 +26,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import java.io.File;
 public class SubBtnListener3 extends JFrame {
 	private JPanel mainP = new JPanel(); // 메인패널
 	private JPanel northP = new JPanel(); //
@@ -61,6 +65,7 @@ public class SubBtnListener3 extends JFrame {
 	private JButton upBtn = new JButton("수정");
 	private JButton delBtn = new JButton("삭제");
 	private JButton resetBtn = new JButton("초기화");
+	private JButton excelBtn = new JButton("엑셀테스트");
 	private boolean popup = true;
 	private boolean popup1 = true;
 	private String skucode = null;
@@ -141,6 +146,51 @@ public class SubBtnListener3 extends JFrame {
 					skucodeTf.setEnabled(true);
 					skunameTf.setEnabled(true);
 					skukindTf.setEnabled(true);
+				}
+			});
+			// 엑셀
+			excelBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					File fname = new File("data2.xls");
+					try{
+						Workbook wb = Workbook.getWorkbook(fname);
+						Sheet s = wb.getSheet(0);
+						
+						int i = 1;
+						while(true){
+							try{
+								Cell c1 = s.getCell(0, i); // sku
+								Cell c2 = s.getCell(1, i); // 제품명
+								Cell c3 = s.getCell(2, i); // 분류
+								Cell c4 = s.getCell(3, i); // 재고위치
+//								Cell c4 = s.getCell(4, i); // 수량
+								String c5 = s.getCell(4, i).getContents();
+								l.stmt.executeUpdate("insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) "
+										+ "values("
+										+ "'" + c1.getContents() + "',"
+										+ "'" + c2.getContents() + "',"
+										+ "'" + c3.getContents() + "',"
+										+ "'" + c4.getContents() + "',"
+										+ Integer.parseInt(c5) + ");");
+								
+								l.stmt.executeUpdate("insert into productlist(sku_code,sku_name,sku_kind) "
+										+ "values("
+										+ "'" + c1.getContents() + "',"
+										+ "'" + c2.getContents() + "',"
+										+ "'" + c3.getContents() + "');");
+								i++;
+							} catch(Exception e2){
+								break;
+							}	
+						}
+						result = allData();
+						model.setDataVector(result, title);
+						wb.close();
+					}catch(Exception e2){
+						System.out.println("Err : " + e2.getMessage());
+					}
 				}
 			});
 ////////////////////////////////삭제 버튼
@@ -277,6 +327,7 @@ public class SubBtnListener3 extends JFrame {
 		southP.add(upBtn);
 		southP.add(delBtn);
 		southP.add(resetBtn);
+		southP.add(excelBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -509,9 +560,14 @@ public class SubBtnListener3 extends JFrame {
 		data.clear();
 		try {
 			if (text.equals("상품정보조회")) {
-				rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
-						+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code where sku_name like '%"
-						+ search + "%'");
+				
+				if(search.equals("")) 
+					rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
+							+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code");
+				else
+					rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
+							+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code where sku_name like '%"
+							+ search + "%'");
 				while (rs.next()) {
 					Vector in = new Vector<String>(); //
 					String sku_code = rs.getString("sku_code");

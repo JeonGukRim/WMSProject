@@ -25,6 +25,16 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import java.io.File;
+import java.io.IOException;
+
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
+
 public class SubBtnListener extends JFrame {
 	private JPanel jp = new JPanel();// 메인 패널
 	private ResultSet rs = null;
@@ -42,6 +52,7 @@ public class SubBtnListener extends JFrame {
 	private JTextField searchTf2 = new JTextField(20);
 	private JButton searchBtn = new JButton("검색");
 	private JButton memoupBtn = new JButton("메모수정");
+	private JButton excelBtn = new JButton("엑셀테스트");
 	private JTextField memoupTf = new JTextField(20);
 	private JPanel upPanel = new JPanel();
 	private PreparedStatement pstmtUpdate = null;
@@ -101,6 +112,52 @@ public class SubBtnListener extends JFrame {
 					update();
 				}
 			});
+			
+			excelBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					File f = new File("data.xls");
+					String[] str = {"SKU번호", "제품명", "분류", "재고위치", "수량", "메모"};
+					//파일객체는 파일에대한 정보만 넘겨주는거기 때문에 예외처리 할필요 없음;
+					try{
+						WritableWorkbook wb = Workbook.createWorkbook(f);
+						WritableSheet s1 = wb.createSheet("output data", 0);
+						
+						for(int i = 0; i < str.length; i++){
+							Label label = new Label(i, 0, str[i]);
+							s1.addCell(label);
+//							Label label1 = new Label(1, i, "데이터.." + i);
+//							s1.addCell(label1);
+						}
+						int i = 0;
+						int j = 1;
+						rs = l.stmt.executeQuery("select * from listdb order by sku_code");
+						while (rs.next()) {
+							Label sku_code = new Label(i++, j, rs.getString("sku_code"));
+							s1.addCell(sku_code);									
+							Label sku_name = new Label(i++, j, rs.getString("sku_name"));
+							s1.addCell(sku_name);									
+							Label sku_kind = new Label(i++, j, rs.getString("sku_kind"));
+							s1.addCell(sku_kind);									
+							Label sku_location = new Label(i++, j, rs.getString("sku_location"));
+							s1.addCell(sku_location);									
+							Label sku_finalnum = new Label(i++, j, rs.getString("sku_finalnum"));
+							s1.addCell(sku_finalnum);									
+							Label memo = new Label(i++, j, rs.getString("memo"));
+							s1.addCell(memo);									
+							i = 0;
+							j++;
+						}
+						wb.write();		//반드시 적어줘야 엑셀에 적용이 됨;
+						wb.close();
+					} catch(Exception e2){
+						System.out.println("Err : " + e2.getMessage());
+					}
+				}
+			});
+			
 		} else if (text.equals("입출고 이력조회")) {
 			resetP();
 			locationSetting2();
@@ -217,6 +274,7 @@ public class SubBtnListener extends JFrame {
 		northP.add(titleCombo);
 		northP.add(searchTf1);
 //		northP.add(searchBtn);
+		northP.add(excelBtn);
 		northP.add(memoupBtn);
 
 		result = allData();// 데이터 값 가져오기
