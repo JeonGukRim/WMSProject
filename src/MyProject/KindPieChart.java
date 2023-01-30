@@ -1,12 +1,19 @@
 package MyProject;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.image.ImageObserver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.AttributedCharacterIterator;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -30,34 +37,36 @@ public class KindPieChart extends JFrame {
 
 	class MyPanel extends JPanel {
 		private int sum = 0;
-		private Color[] color = {Color.RED,
-				Color.BLUE,Color.YELLOW,Color.GRAY,Color.CYAN,Color.ORANGE,Color.GREEN};
+		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW, Color.GRAY, Color.CYAN, Color.ORANGE,
+				Color.GREEN };
 		private int start = 0;
-		private int over =0;
-		private	Graphics g = null;
-		public MyPanel() {  
-			dbclass();
-			allData();
-			for(int i =0 ; i < data1.size();i++) {
-					sum += data2.get(i);
+		private int over = 0;
+		private Graphics g;
+
+		public MyPanel() {
+			dbclass(); // db연결
+			allData(); // 데이터 받아오기
+			// 총 수량 합계;
+			for (int i = 0; i < data1.size(); i++) {
+				sum += data2.get(i);
 			}
-			
-			for(int i = 0;i<data1.size();i++) {
-				over =((data2.get(i)/sum)*360);
-				paintComponent(g,color[i],start,over);
+			// 첫 품목 차트 비율 계산
+			for (int i = 0; i < data1.size(); i++) {
+				over = ((data2.get(i) / sum) * 360);
+				paintComponent(g, color[i], start, over);
 				start += over;
 			}
-			
+
 		}
-		
-		public void paintComponent(Graphics g,Color color,int start,int over) {
+
+		public void paintComponent(Graphics g, Color color, int start, int over) {
 			super.paintComponent(g);
 			g.setColor(color);
-			g.fillArc(0,0,100,100,start,over);
+			g.fillArc(0, 0, 100, 100, start, over);
 		}
 	}
 
-	// SELECT COUNT(DISTINCT sku_kind) from listdb group by sku_kind; 종류
+// SELECT COUNT(DISTINCT sku_kind) from listdb group by sku_kind; 종류
 //	select sku_kind, SUM(sku_finalnum) as total from listdb group by sku_kind;
 	public void allData() {
 		data1.clear();
@@ -77,7 +86,6 @@ public class KindPieChart extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		return data;
 	}
 
 	public void dbclass() {
