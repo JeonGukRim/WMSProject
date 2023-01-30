@@ -56,7 +56,7 @@ public class KindPieChart extends JFrame {
 				over = ((double) data2.get(i) / (double) sum * 360);
 				g.setColor(color[i]);
 				g.fillOval(n, 310 + o, 15, 15); // 사각형
-				g.fillArc(100, 0, 300, 300, (int) start, (int) over);
+				g.fillArc(270, 0, 300, 300, (int) start, (int) over);
 				n += 130;
 				start += over;
 				g.setColor(Color.black);
@@ -71,6 +71,9 @@ public class KindPieChart extends JFrame {
 					m = 0 ;
 					
 				}
+				g.setColor(Color.black);
+				g.setFont(new Font("맑음 고딕", Font.BOLD, 30));
+				g.drawString("재고 종류별 보유 현황", 0,30);
 				repaint();
 			}
 		}
