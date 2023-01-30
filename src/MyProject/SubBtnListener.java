@@ -67,7 +67,6 @@ public class SubBtnListener extends JFrame {
 	private JComboBox titleCombo = new JComboBox<String>(t);
 	private JCheckBox yetCk = new JCheckBox("작업미완료");
 	private JCheckBox overCk = new JCheckBox("작업완료");
-
 	private int row = -1; // 행미선택시 디폴트 값이 -1임;
 
 	public SubBtnListener(JPanel jp, String text, String loginid, JFrame frame) {
@@ -98,6 +97,8 @@ public class SubBtnListener extends JFrame {
 					String search = searchTf1.getText();
 					if (search.trim().isEmpty()) {
 						JOptionPane.showMessageDialog(null, "검색할 내용을 입력해주세요", "알림", JOptionPane.DEFAULT_OPTION);
+						result = allData();
+						model.setDataVector(result, title);
 						return;
 					} else {
 						result = search(search);
@@ -273,7 +274,6 @@ public class SubBtnListener extends JFrame {
 
 		northP.add(titleCombo);
 		northP.add(searchTf1);
-//		northP.add(searchBtn);
 		northP.add(excelBtn);
 		northP.add(memoupBtn);
 
