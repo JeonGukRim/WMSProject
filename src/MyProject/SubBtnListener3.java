@@ -65,7 +65,7 @@ public class SubBtnListener3 extends JFrame {
 	private JButton upBtn = new JButton("수정");
 	private JButton delBtn = new JButton("삭제");
 	private JButton resetBtn = new JButton("초기화");
-	private JButton excelBtn = new JButton("엑셀테스트");
+	private JButton excelBtn = new JButton("리스트 업로드");
 	private boolean popup = true;
 	private boolean popup1 = true;
 	private String skucode = null;
@@ -148,12 +148,12 @@ public class SubBtnListener3 extends JFrame {
 					skukindTf.setEnabled(true);
 				}
 			});
-			// 엑셀
+//////////////////////////////////엑셀 버튼
 			excelBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					File fname = new File("data2.xls");
+					File fname = new File("data2.xls");//파일위치
 					try{
 						Workbook wb = Workbook.getWorkbook(fname);
 						Sheet s = wb.getSheet(0);
