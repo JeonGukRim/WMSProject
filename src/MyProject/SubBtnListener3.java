@@ -30,6 +30,7 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import java.io.File;
+
 public class SubBtnListener3 extends JFrame {
 	private JPanel mainP = new JPanel(); // 메인패널
 	private JPanel northP = new JPanel(); //
@@ -94,7 +95,7 @@ public class SubBtnListener3 extends JFrame {
 		this.loginid = loginid;
 		l = (LoginUi) frame;
 		mainP.setLayout(new BorderLayout());
-	
+
 /////////////////////////////////상품정보조회//////////////////////////////////////		
 		if (text.equals("상품정보조회")) {
 			resetP();
@@ -153,42 +154,38 @@ public class SubBtnListener3 extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					File fname = new File("data2.xls");//파일위치
-					try{
+					File fname = new File("data2.xls");// 파일위치
+					try {
 						Workbook wb = Workbook.getWorkbook(fname);
 						Sheet s = wb.getSheet(0);
-						
+
 						int i = 1;
-						while(true){
-							try{
+						while (true) {
+							try {
 								Cell c1 = s.getCell(0, i); // sku
 								Cell c2 = s.getCell(1, i); // 제품명
 								Cell c3 = s.getCell(2, i); // 분류
 								Cell c4 = s.getCell(3, i); // 재고위치
 //								Cell c4 = s.getCell(4, i); // 수량
 								String c5 = s.getCell(4, i).getContents();
-								l.stmt.executeUpdate("insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) "
-										+ "values("
-										+ "'" + c1.getContents() + "',"
-										+ "'" + c2.getContents() + "',"
-										+ "'" + c3.getContents() + "',"
-										+ "'" + c4.getContents() + "',"
-										+ Integer.parseInt(c5) + ");");
-								
-								l.stmt.executeUpdate("insert into productlist(sku_code,sku_name,sku_kind) "
-										+ "values("
-										+ "'" + c1.getContents() + "',"
-										+ "'" + c2.getContents() + "',"
-										+ "'" + c3.getContents() + "');");
+								l.stmt.executeUpdate(
+										"insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) "
+												+ "values(" + "'" + c1.getContents() + "'," + "'" + c2.getContents()
+												+ "'," + "'" + c3.getContents() + "'," + "'" + c4.getContents() + "',"
+												+ Integer.parseInt(c5) + ");");
+
+								l.stmt.executeUpdate("insert into productlist(sku_code,sku_name,sku_kind) " + "values("
+										+ "'" + c1.getContents() + "'," + "'" + c2.getContents() + "'," + "'"
+										+ c3.getContents() + "');");
 								i++;
-							} catch(Exception e2){
+							} catch (Exception e2) {
 								break;
-							}	
+							}
 						}
 						result = allData();
 						model.setDataVector(result, title);
 						wb.close();
-					}catch(Exception e2){
+					} catch (Exception e2) {
 						System.out.println("Err : " + e2.getMessage());
 					}
 				}
@@ -295,7 +292,7 @@ public class SubBtnListener3 extends JFrame {
 					tableCheckBox();
 				}
 			});
-			
+
 		}
 
 	}
@@ -312,6 +309,7 @@ public class SubBtnListener3 extends JFrame {
 		title.add("제품명");
 		title.add("분류");
 		title.add("보유 재고수량");
+		title.add("재고 위치");
 		result = allData();
 		model.setDataVector(result, title);
 		table = new JTable(model);
@@ -415,6 +413,7 @@ public class SubBtnListener3 extends JFrame {
 			return box;
 		}
 	};
+
 ////////////////////////////전체 패널 리셋
 	public void resetP() {
 		mainP.removeAll();
@@ -560,14 +559,16 @@ public class SubBtnListener3 extends JFrame {
 		data.clear();
 		try {
 			if (text.equals("상품정보조회")) {
-				
-				if(search.equals("")) 
-					rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
-							+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code");
+
+				if (search.equals(""))
+					rs = l.stmt.executeQuery(
+							"select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
+									+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code");
 				else
-					rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
-							+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code where sku_name like '%"
-							+ search + "%'");
+					rs = l.stmt.executeQuery(
+							"select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
+									+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code where sku_name like '%"
+									+ search + "%'");
 				while (rs.next()) {
 					Vector in = new Vector<String>(); //
 					String sku_code = rs.getString("sku_code");
@@ -613,18 +614,22 @@ public class SubBtnListener3 extends JFrame {
 	public Vector allData() {
 		data.clear();
 		try {
-			rs = l.stmt.executeQuery("select * from productlist p left join (select sku_code, SUM(sku_finalnum) as "
-					+ "total from listdb group by sku_code) s on p.sku_code = s.sku_code");
+			rs = l.stmt.executeQuery(
+					"select * from productlist p left join (select sku_code, SUM(sku_finalnum) as total from "
+					+ "listdb group by sku_code) s on p.sku_code = s.sku_code left join(SELECT sku_code, group_CONCAT(sku_location)"
+					+ " AS sum FROM listdb group by sku_code) k on p.sku_code = k.sku_code");
 			while (rs.next()) {
 				Vector in = new Vector<String>(); //
 				String sku_code = rs.getString("sku_code");
 				String sku_name = rs.getString("sku_name");
 				String sku_kind = rs.getString("sku_kind");
 				String total_num = rs.getString("total");
+				String location = rs.getString("sum");
 				in.add(sku_code);
 				in.add(sku_name);
 				in.add(sku_kind);
 				in.add(total_num);
+				in.add(location);
 				data.add(in);
 			}
 		} catch (Exception e) {
