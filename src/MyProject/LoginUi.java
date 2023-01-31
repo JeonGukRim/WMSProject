@@ -76,30 +76,29 @@ public class LoginUi extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if (pwTf.getText().length() == 0 && loginTf.getText().trim().length() != 0 ) {
+				if (pwTf.getText().length() == 0 && loginTf.getText().trim().length() != 0) {
 					JOptionPane.showMessageDialog(null, "비밀번호을 입력 해주세요", "알림", 1);
-				}else if(pwTf.getText().length() != 0 && loginTf.getText().trim().length() == 0) {
+				} else if (pwTf.getText().length() != 0 && loginTf.getText().trim().length() == 0) {
 					JOptionPane.showMessageDialog(null, "아이디을 입력 해주세요", "알림", 1);
-				}else if(pwTf.getText().length() == 0 && loginTf.getText().trim().length() == 0) {
+				} else if (pwTf.getText().length() == 0 && loginTf.getText().trim().length() == 0) {
 					JOptionPane.showMessageDialog(null, "입력정보가 없습니다", "알림", 1);
-				}
-				else {
+				} else {
 					loginAction();
 				}
 			}
 		});
 		// 패스워드 입력후 enter키로 로그인
-
 		pwTf.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if (pwTf.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "비밀번호을 입력하여 주세요", "알림", 1);
-				}else if(loginTf.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "아이디을 입력하여 주세요", "알림", 1);
-				}
-				else {
+				if (pwTf.getText().length() == 0 && loginTf.getText().trim().length() != 0) {
+					JOptionPane.showMessageDialog(null, "비밀번호을 입력 해주세요", "알림", 1);
+				} else if (pwTf.getText().length() != 0 && loginTf.getText().trim().length() == 0) {
+					JOptionPane.showMessageDialog(null, "아이디을 입력 해주세요", "알림", 1);
+				} else if (pwTf.getText().length() == 0 && loginTf.getText().trim().length() == 0) {
+					JOptionPane.showMessageDialog(null, "입력정보가 없습니다", "알림", 1);
+				} else {
 					loginAction();
 				}
 			}
