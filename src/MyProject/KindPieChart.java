@@ -31,8 +31,8 @@ public class KindPieChart extends JFrame {
 	}
 	class MyPanel extends JPanel {
 		private int sum = 0;
-		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW, Color.PINK, Color.CYAN, Color.ORANGE,
-				Color.GREEN ,Color.MAGENTA,Color.LIGHT_GRAY};
+		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW,Color.gray,Color.PINK, Color.CYAN, Color.ORANGE,
+				Color.GREEN ,Color.MAGENTA,Color.LIGHT_GRAY,Color.DARK_GRAY};
 		private double start = 0;
 		private double over = 0;
 
@@ -52,9 +52,9 @@ public class KindPieChart extends JFrame {
 			int p = 0; //폰트 길이 초과시 줄바꿈
 			for (int i = 0; i < data1.size(); i++) {
 				over = ((double) data2.get(i) / (double) sum * 360);
-//				g.setColor(color[i]);  //개수가 초과시 오류 날 가능성 있음
-				g.setColor( new Color((int)(Math.random()*256), 
-						(int)(Math.random()*256),(int)(Math.random()*256)));
+				g.setColor(color[i]);  //개수가 초과시 오류 날 가능성 있음
+//				g.setColor( new Color((int)(Math.random()*256), 
+//						(int)(Math.random()*256),(int)(Math.random()*256)));
 				g.fillOval(n, 310 + o, 15, 15); // 사각형
 				g.fillArc(270, 0, 300, 300, (int) start, (int) over);
 				
@@ -75,6 +75,8 @@ public class KindPieChart extends JFrame {
 				g.setColor(Color.black);
 				g.setFont(new Font("맑음 고딕", Font.BOLD, 30));
 				g.drawString("재고 종류별 보유 현황", 0,30);
+				g.setColor(new Color(230,230,230));
+				g.fillOval(370,100 , 100, 100);
 			}
 		}
 	}

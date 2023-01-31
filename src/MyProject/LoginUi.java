@@ -27,8 +27,8 @@ public class LoginUi extends JFrame {
 	private MyPanel panel = new MyPanel();
 	private JLabel idjl = new JLabel(new ImageIcon("images/id.png"));
 	private JLabel pwjl = new JLabel(new ImageIcon("images/pw.png"));
-	private JTextField loginTf = new JTextField(10);  //아이디 입력 필드
-	private JPasswordField pwTf = new JPasswordField(10); //비밀번호 입력 필드
+	private JTextField loginTf = new JTextField(10); // 아이디 입력 필드
+	private JPasswordField pwTf = new JPasswordField(10); // 비밀번호 입력 필드
 	private JButton login = new JButton("로 그 인");
 	public JCheckBox ck, radio2;
 	private ButtonGroup g = new ButtonGroup();
@@ -55,39 +55,56 @@ public class LoginUi extends JFrame {
 		loginTf.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		loginTf.setBackground(Color.LIGHT_GRAY);
 		loginTf.setLocation(880, 471);
-		//비밀번호 입력 정보
+		// 비밀번호 입력 정보
 		pwjl.setLocation(740, 460);
 		pwjl.setSize(200, 200);
 		pwTf.setSize(400, 40);
 		pwTf.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		pwTf.setBackground(Color.LIGHT_GRAY);
 		pwTf.setLocation(880, 540);
-		//로그인 버튼
+		// 로그인 버튼
 		login.setSize(150, 30);
 		login.setForeground(Color.WHITE);
 		login.setBackground(new Color(73, 182, 155));
-		login.setFont(new Font("맑음 고딕",Font.BOLD,20));
+		login.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		login.setLocation(880, 620);
-		//데이터베이스 연결
+		// 데이터베이스 연결
 		dbclass();
-		
-		//로그인버튼 아이디 비번 확인 
+
+		// 로그인버튼 아이디 비번 확인
 		login.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				loginAction ();
+				if (pwTf.getText().length() == 0 && loginTf.getText().trim().length() != 0 ) {
+					JOptionPane.showMessageDialog(null, "비밀번호을 입력 해주세요", "알림", 1);
+				}else if(pwTf.getText().length() != 0 && loginTf.getText().trim().length() == 0) {
+					JOptionPane.showMessageDialog(null, "아이디을 입력 해주세요", "알림", 1);
+				}else if(pwTf.getText().length() == 0 && loginTf.getText().trim().length() == 0) {
+					JOptionPane.showMessageDialog(null, "입력정보가 없습니다", "알림", 1);
+				}
+				else {
+					loginAction();
+				}
 			}
 		});
-		//패스워드 입력후 enter키로 로그인
+		// 패스워드 입력후 enter키로 로그인
+
 		pwTf.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				loginAction ();
+				if (pwTf.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "비밀번호을 입력하여 주세요", "알림", 1);
+				}else if(loginTf.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "아이디을 입력하여 주세요", "알림", 1);
+				}
+				else {
+					loginAction();
+				}
 			}
 		});
-		panel.add(ck);  //체크박스 추가
+		panel.add(ck); // 체크박스 추가
 		panel.add(idjl);
 		panel.add(pwjl);
 		panel.add(loginTf);
@@ -129,12 +146,13 @@ public class LoginUi extends JFrame {
 		}
 
 	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new LoginUi();
 	}
 
-	public void loginAction () {
+	public void loginAction() {
 		String mode = null;
 		String id = null;
 		String pw = null;
@@ -162,7 +180,7 @@ public class LoginUi extends JFrame {
 			JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	public void dbclass() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
