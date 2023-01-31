@@ -56,8 +56,6 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel kinddata = new JLabel();
 	private JLabel innum = new JLabel("입고예정수량:");
 	private JTextField inTf = new JTextField(20);
-//	private NumberField inTf = new NumberField();
-
 	private JButton creatBtn = new JButton("생성");
 	private JButton upBtn = new JButton("새로고침");
 	private Boolean exp = true;
@@ -78,7 +76,7 @@ public class SubBtnListener1 extends JFrame {
 	private JLabel skuLocationTf = new JLabel("");
 	private JButton inBtn = new JButton("입고완료");
 
-	/////////////////////////// Location정보///////////////////////////////////////
+/////////////////////////// Location정보///////////////////////////////////////
 	private JButton addBtn = new JButton("추가");
 	private JTextField loTf = new JTextField(20);
 	private JButton delBtn = new JButton("삭제");
@@ -92,9 +90,6 @@ public class SubBtnListener1 extends JFrame {
 	private String loginid;
 	private LoginUi l;
 
-	public SubBtnListener1() {
-	}
-
 	public SubBtnListener1(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
 		this.text = text;
@@ -107,6 +102,8 @@ public class SubBtnListener1 extends JFrame {
 		if (text.equals("발주서 생성")) {
 			resetP();
 			locationSetting();
+
+			// 코드필드에 입력후 검색 하기
 			codeTf.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -132,6 +129,7 @@ public class SubBtnListener1 extends JFrame {
 					}
 				}
 			});
+			// 필드값 리셋버튼
 			upBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -142,6 +140,7 @@ public class SubBtnListener1 extends JFrame {
 					codeTf.setEditable(exp);
 				}
 			});
+			// 발주오더 생성 버튼
 			creatBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -188,6 +187,7 @@ public class SubBtnListener1 extends JFrame {
 		if (text.equals("입고")) {
 			resetP();
 			locationSetting1();
+			// 오더번호 선택후 조회 버튼 정의
 			view.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -210,18 +210,20 @@ public class SubBtnListener1 extends JFrame {
 						}
 					}
 
-					// 입고완료 저장
 					if (!skuCodeJl.getText().equals("")) {
+						// 입고완료 저장
 						inBtn.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								// TODO Auto-generated method stub
+								// 현재 시간 가져오기
 								LocalDateTime now = LocalDateTime.now();
 								formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
+								// 실제 입고수량 변수
 								int realnum = 0;
 								try {
+									// 실제 입고수량 입력값 가져오기및 입력 오류 점검
 									realnum = Integer.parseInt(realinNumTf.getText());
-									
 									try {
 										// 입출고 이력에 실제 입고수량 날짜 작업자 id 저장
 										if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
@@ -244,19 +246,20 @@ public class SubBtnListener1 extends JFrame {
 									}
 
 									try {
-										// 리스트에 같은 제품과 재고위치에 재고가 존재한다면 재고 추가
+										// 리스트에 같은 제품과 같은 재고위치에 재고가 존재한다면 수량만 입고수량만큼 추가
+										// 재고위치를 따로 지정하였다면 새로운 셀 생성및추가
 										if (realnum <= Integer.parseInt(indata.getText()) && realnum >= 0) {
-											rs = l.stmt.executeQuery(
-													"select * from listdb  where sku_location = '" + skuLocationTf.getText()
-															+ "' and sku_code='" + skuCodeJl.getText() + "'");
+											rs = l.stmt.executeQuery("select * from listdb  where sku_location = '"
+													+ skuLocationTf.getText() + "' and sku_code='" + skuCodeJl.getText()
+													+ "'");
 											if (rs.isBeforeFirst()) {
+												// 현재 재고수량 받을 변수
 												int num = 0;
 												pstmtUpdate = l.conn.prepareStatement(
 														"update listdb set sku_finalnum = ? where sku_location = ? and sku_code = ?");
 												while (rs.next()) {
 													num = rs.getInt("sku_finalnum");
 												}
-
 												num += realnum;
 												pstmtUpdate.setInt(1, num);
 												pstmtUpdate.setString(2, skuLocationTf.getText());
@@ -266,7 +269,6 @@ public class SubBtnListener1 extends JFrame {
 												pstmtInsert = l.conn.prepareStatement(
 														"insert into listdb(sku_code,sku_name,sku_kind,sku_location,sku_finalnum) values( ?,? ,"
 																+ "? ,?,?)");
-//											int num1 = Integer.parseInt(realinNumTf.getText());
 												pstmtInsert.setString(1, skuCodeJl.getText());
 												pstmtInsert.setString(2, skuNamedata.getText());
 												pstmtInsert.setString(3, kinddata.getText());
@@ -274,7 +276,6 @@ public class SubBtnListener1 extends JFrame {
 												pstmtInsert.setInt(5, realnum);
 												pstmtInsert.executeUpdate();
 											}
-
 											orderCombo.removeAll();
 											skuCodeJl.setText("");
 											skuNamedata.setText("");
@@ -290,21 +291,14 @@ public class SubBtnListener1 extends JFrame {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									
-									
-									
-									
+
 								} catch (Exception e1) {
 									e1.printStackTrace();
 									JOptionPane.showMessageDialog(null, "숫자를 확인해주세요", "알림", 1);
 								}
-
-								
 							}
-
 						});
 					}
-
 				}
 			});
 		}
@@ -321,14 +315,17 @@ public class SubBtnListener1 extends JFrame {
 					loTf.setText(sku_location);
 				}
 			});
+			// 검색버튼
 			seaBtn.addActionListener(new btnAction());
+			// 추가버튼
 			addBtn.addActionListener(new btnAction());
+			// 삭제버튼
 			delBtn.addActionListener(new btnAction());
 		}
 	}
 
-/////////////////////////////////////이하 메소드 구역/////////////////////////////////////////////////
-	public void locationSetting() { // 발주서생성 세팅
+	// 발주서생성 세팅
+	public void locationSetting() {
 		// 현재 시간으로 오더번호 생성 입고는 IO,출고는 OP로 시작;
 		creatCombo();
 		ordernum = new JLabel("IO" + formatedNow);
@@ -394,6 +391,8 @@ public class SubBtnListener1 extends JFrame {
 //				}
 //			}
 //		});
+
+		// 현재 존재하고 있는 재고위치와 각 위치에 보유하고 있는 수량을 가져오기
 		locationCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -415,7 +414,7 @@ public class SubBtnListener1 extends JFrame {
 				}
 			}
 		});
-
+		// 제품리스트 테이블에서 선택된 내용을 추가 버튼으로 발주서생성내역에 넣어주기
 		addBtn1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -438,7 +437,8 @@ public class SubBtnListener1 extends JFrame {
 		result = null;
 	}
 
-	public void locationSetting1() { // 입고 세팅
+	// 입고 세팅
+	public void locationSetting1() {
 		creatComboBox();
 		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
 		northP.add(order);
@@ -467,7 +467,8 @@ public class SubBtnListener1 extends JFrame {
 
 	}
 
-	public void locationSetting2() {// 재고위치정보 세팅
+	// 재고위치정보 세팅
+	public void locationSetting2() {
 
 		northP.setLayout(new FlowLayout(FlowLayout.LEFT, 40, 0));
 		northP.add(new JLabel("추가/삭제 재고위치 >>"));
@@ -505,6 +506,7 @@ public class SubBtnListener1 extends JFrame {
 		testP.repaint();
 	}
 
+	// 입고시 오더번호 콤보 박스 생성
 	public void creatComboBox() {
 		Vector orderlist = new Vector<>();
 		try {
@@ -520,10 +522,25 @@ public class SubBtnListener1 extends JFrame {
 		}
 	}
 
-	public Vector getData() { // 재고위치 정보 저장
+	// 발주서생성시 재고위치 콤보박스 제작
+	public void creatCombo() {
+		Vector list = new Vector<>();
+		try {
+			rs = l.stmt.executeQuery("select * from locationdb order by sku_location");
+			while (rs.next()) {
+				String location = rs.getString("sku_location");
+				list.add(location);
+			}
+			locationCombo = new JComboBox<String>(list);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 재고위치 정보 및 수량 정보를 가져오기
+	public Vector getData() {
 		data.clear();
 		try {
-//			rs = l.stmt.executeQuery("select * from locationdb");
 			rs = l.stmt.executeQuery(
 					"select * from locationdb l left join (select sku_location, SUM(sku_finalnum) as total from listdb group by sku_location) "
 							+ "s on l.sku_location = s.sku_location");
@@ -543,10 +560,10 @@ public class SubBtnListener1 extends JFrame {
 		return data;
 	}
 
-	public Vector searchData() { // 재고위치 정보 저장
+	// 재고위치 정보 검색기능
+	public Vector searchData() {
 		data.clear();
 		try {
-//			rs = l.stmt.executeQuery("select * from locationdb where sku_location like '%" + loTf.getText() + "%'");
 			rs = l.stmt.executeQuery(
 					"select * from locationdb l left join (select sku_location, SUM(sku_finalnum) as total from listdb group by sku_location) "
 							+ "s on l.sku_location = s.sku_location where l.sku_location like '%" + loTf.getText()
@@ -570,6 +587,7 @@ public class SubBtnListener1 extends JFrame {
 		return data;
 	}
 
+	// 재고위치값을 데이터베이스에 새로 추가
 	public void addData() {
 		if (loTf.getText().trim().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "입력값을 확인 해주세요", "알림", 1);
@@ -595,6 +613,7 @@ public class SubBtnListener1 extends JFrame {
 		}
 	}
 
+	// 재고위치값을 데이터베이스에서 삭제, 현재 재고 보유중이면 삭제 불가
 	public void delData() {
 		try {
 
@@ -625,6 +644,7 @@ public class SubBtnListener1 extends JFrame {
 
 	}
 
+	// 모든 상품정보리스트 가져오기
 	public Vector allData() {
 		data.clear();
 		try {
@@ -645,6 +665,7 @@ public class SubBtnListener1 extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
+	// 재고정보에서 버튼기능 리스너
 	private class btnAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -662,8 +683,7 @@ public class SubBtnListener1 extends JFrame {
 		}
 
 	}
-
-	// 발주서 추가
+	// 발주서 생성
 	public void creat(String sku, String name, String kind, int num, String order) {
 		try {
 			pstmtInsert = l.conn.prepareStatement(
@@ -684,22 +704,5 @@ public class SubBtnListener1 extends JFrame {
 			JOptionPane.showMessageDialog(null, "입고예정수량을 확인해주세요", "알림", JOptionPane.ERROR);
 			e.printStackTrace();
 		}
-
 	}
-
-	// 콤보박스 제작
-	public void creatCombo() {
-		Vector list = new Vector<>();
-		try {
-			rs = l.stmt.executeQuery("select * from locationdb order by sku_location");
-			while (rs.next()) {
-				String location = rs.getString("sku_location");
-				list.add(location);
-			}
-			locationCombo = new JComboBox<String>(list);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

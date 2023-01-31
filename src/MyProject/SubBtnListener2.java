@@ -78,7 +78,6 @@ public class SubBtnListener2 extends JFrame {
 	private JLabel skuLocationData = new JLabel();
 	private JButton outBtn = new JButton("출고완료");
 
-////////////////////////////////////////////////////////////////////////////	
 	public SubBtnListener2(JPanel mainP, String text, String loginid, JFrame frame) {
 		this.mainP = mainP;
 		this.text = text;
@@ -92,6 +91,8 @@ public class SubBtnListener2 extends JFrame {
 		if (text.equals("출고오더생성")) {
 			resetP();
 			locationSetting1();
+			
+			//코드입력 필드에 입력후 enter키로 조회
 			codeTf.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -118,8 +119,8 @@ public class SubBtnListener2 extends JFrame {
 					}
 				}
 			});
+			//입력받은 값 리셋 새로고침 버튼
 			upBtn.addActionListener(new ActionListener() {
-				// 새로고침
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
@@ -128,14 +129,16 @@ public class SubBtnListener2 extends JFrame {
 					codeTf.setEditable(exp);
 				}
 			});
+			//출고오더 생성
 			creatBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
+					//현재 출고 가능 수량 변수
 					int num = 0;
-//					int outex = 0;
 					if (outnumTf.getText().trim().length() != 0 && exp == false) {
 						try {
+							//출고예정수량 입력 변수
 							int outex = Integer.parseInt(outnumTf.getText());
 							try {
 								rs = l.stmt.executeQuery("select * from listdb where sku_code ='" + codeTf.getText()
@@ -143,12 +146,11 @@ public class SubBtnListener2 extends JFrame {
 								while (rs.next()) {
 									num = rs.getInt("sku_finalnum");
 								}
-
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-
+							//출고에정수량과 보유수량보다 많을시 오류 처리
 							if (outex > num) {
 								JOptionPane.showMessageDialog(null, "출고가능 수량을 초과하였습니다", "알림",
 										JOptionPane.ERROR_MESSAGE);
@@ -184,9 +186,8 @@ public class SubBtnListener2 extends JFrame {
 		if (text.equals("출고")) {
 			resetP();
 			locationSetting2();
-			//출고 오더 조회
+			// 출고 오더 조회
 			view.addActionListener(new ActionListener() {
-
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
@@ -218,6 +219,7 @@ public class SubBtnListener2 extends JFrame {
 					LocalDateTime now = LocalDateTime.now();
 					formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분"));
 					String select = orderCombo.getSelectedItem().toString();
+					//실제 출고 수량 변수
 					int realnum = 0;
 					try {
 						// try 입력값의 정확성 판단
@@ -229,8 +231,9 @@ public class SubBtnListener2 extends JFrame {
 						while (rs.next()) {
 							getnum = rs.getInt("sku_finalnum");
 						}
+						//실제 출고수량이 보유재고보다 많을때
 						if (realnum > getnum) {
-							JOptionPane.showMessageDialog(null, "현재 해당 재고 보유 수량이 "+getnum+"개 입니다", "알림", 1);
+							JOptionPane.showMessageDialog(null, "현재 해당 재고 보유 수량이 " + getnum + "개 입니다", "알림", 1);
 						} else {
 							try {
 								if (realnum <= Integer.parseInt(finalNumdata.getText()) && realnum >= 0) {
@@ -244,7 +247,7 @@ public class SubBtnListener2 extends JFrame {
 									pstmtUpdate.setString(5, select);
 									pstmtUpdate.executeUpdate();
 
-									//현재 재고 수량에서 출고수량 덜어내기
+									// 현재 재고 수량에서 출고수량 덜어내기
 									pstmtUpdate = l.conn.prepareStatement(
 											"update  listdb set sku_finalnum = ? where sku_code =? and sku_location = ?");
 									pstmtUpdate.setInt(1, (getnum - realnum));
@@ -253,7 +256,7 @@ public class SubBtnListener2 extends JFrame {
 									JOptionPane.showMessageDialog(null, "출고완료 되였습니다", "알림", 1);
 									pstmtUpdate.executeUpdate();
 
-									//재고가 0인 데이터 삭제처리
+									// 재고가 0인 데이터 삭제처리
 									pstmtDelete = l.conn
 											.prepareStatement("delete from listdb where sku_finalnum = '0'");
 									pstmtDelete.executeUpdate();
@@ -272,7 +275,6 @@ public class SubBtnListener2 extends JFrame {
 								} else {
 									JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "에러", JOptionPane.ERROR_MESSAGE);
 								}
-
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -286,10 +288,8 @@ public class SubBtnListener2 extends JFrame {
 			});
 		}
 	}
-
-///////////////////////////////////메소드//////////////////////////////////////	
-
-	//출고오더생성
+	
+	// 출고오더생성 세팅
 	public void locationSetting1() {
 		ordernum = new JLabel("OP" + formatedNow);
 		headname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
@@ -360,7 +360,8 @@ public class SubBtnListener2 extends JFrame {
 		});
 		result = null;
 	}
-	//출고
+
+	// 출고기능 테이블 세팅
 	public void locationSetting2() {
 		creatComboBox();
 		northP.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 0));
@@ -388,7 +389,8 @@ public class SubBtnListener2 extends JFrame {
 		southP.add(outBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
 	}
-	//패널 리셋
+
+	// 패널 리셋
 	public void resetP() {
 		mainP.removeAll();
 		northP.removeAll();
@@ -411,7 +413,8 @@ public class SubBtnListener2 extends JFrame {
 		finalNumdata.setText("");
 		outdata.setText("");
 	}
-
+	
+	//재고현황 데이터 전부 가져오기
 	public Vector allData() {
 		data.clear();
 		try {
@@ -435,9 +438,10 @@ public class SubBtnListener2 extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return data; // 전체 데이터 저장하는 data 벡터 리턴
+		return data; 
 	}
-
+	
+	//출고오더 생성
 	public void creat(String sku, String name, String kind, int num, String order, String location) {
 
 		try {
@@ -460,7 +464,8 @@ public class SubBtnListener2 extends JFrame {
 		}
 
 	}
-
+	
+	//출고시 오더번호 콤보박스
 	public void creatComboBox() {
 		Vector orderlist = new Vector<>();
 		try {

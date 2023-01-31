@@ -79,6 +79,7 @@ public class SubBtnListener extends JFrame {
 		data = new Vector<>();
 		model = new DefaultTableModel();
 
+		
 		if (text.equals("재고현황조회")) {
 			resetP();
 			title.clear();
@@ -90,6 +91,7 @@ public class SubBtnListener extends JFrame {
 					row = table.getSelectedRow();
 				}
 			});
+			//검색 필드 액션
 			searchTf1.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -106,6 +108,7 @@ public class SubBtnListener extends JFrame {
 					}
 				}
 			});
+			//메모수정 버튼
 			memoupBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -113,7 +116,7 @@ public class SubBtnListener extends JFrame {
 					update();
 				}
 			});
-			
+			//엑셀 출력
 			excelBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {  //출력완료후 알림이 필요함
@@ -166,6 +169,7 @@ public class SubBtnListener extends JFrame {
 
 	}
 
+	//데이터베이스에 수정내용 업그레이드 
 	private void update() {
 		try {
 			if (row >= 0) {
@@ -184,7 +188,7 @@ public class SubBtnListener extends JFrame {
 
 	}
 
-	// 모든 데이터 조회
+	// 재고현황 모든 데이터 조회
 	public Vector allData() {
 		data.clear();
 		try {
@@ -206,8 +210,7 @@ public class SubBtnListener extends JFrame {
 					in.add(menmo);
 					data.add(in);
 				}
-
-			} else {
+			} else { //레디오 버튼 작업롼료,미완료,입고,출고 구분
 				if (radio[0].isSelected() && yetCk.isSelected() && overCk.isSelected())
 					rs = l.stmt.executeQuery("select * from iohistory order by sku_code");
 				else if ((radio[0].isSelected() && !yetCk.isSelected() && overCk.isSelected()))
@@ -228,7 +231,6 @@ public class SubBtnListener extends JFrame {
 					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '출고'and complete = 'over'");
 				else if ((radio[2].isSelected() && yetCk.isSelected() && !overCk.isSelected()))
 					rs = l.stmt.executeQuery("select * from iohistory where oder_kind = '출고' and complete = 'yet'");
-
 				while (rs.next()) {
 					Vector in = new Vector<String>(); //
 					String sku_code = rs.getString("sku_code");
@@ -262,7 +264,7 @@ public class SubBtnListener extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
-	// 재고현황 세팅
+	// 재고현황 테이블 세팅 
 	public void locationSetting1() {
 		table.removeAll();
 		title.add("SKU번호");
@@ -289,14 +291,13 @@ public class SubBtnListener extends JFrame {
 				}
 			}
 		};
-		;
 		JScrollPane sp = new JScrollPane(table);
 		jp.add(northP, BorderLayout.NORTH);
 		jp.add(sp, BorderLayout.CENTER);
 		result = null;
 	}
 
-	// 입출고 이력 세팅
+	// 입출고 이력 테이블 세팅
 	public void locationSetting2() {
 		ButtonGroup g = new ButtonGroup();
 		for (int i = 0; i < radio.length; i++) {
@@ -325,7 +326,6 @@ public class SubBtnListener extends JFrame {
 		table = new JTable(model);
 		JScrollPane sp = new JScrollPane(table);
 		jp.add(sp, BorderLayout.CENTER);
-
 	}
 
 	public Vector search(String search) {
@@ -366,7 +366,6 @@ public class SubBtnListener extends JFrame {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
 				return;
 			}
-
 			if (radio[0].isSelected()) {
 				result = allData();
 				model.setDataVector(result, title);
@@ -380,6 +379,7 @@ public class SubBtnListener extends JFrame {
 		}
 	}
 
+	//작업 완료 미완료 체크박스 리스너
 	class checkBoxListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
@@ -401,7 +401,7 @@ public class SubBtnListener extends JFrame {
 		}
 
 	}
-
+	//모든 패널 리셋
 	public void resetP() {
 		jp.removeAll();
 		upPanel.removeAll();

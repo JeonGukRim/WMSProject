@@ -15,22 +15,20 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+/* 분류별 통계 창고재고 수량 점유 파이차트*/
 public class KindPieChart extends JFrame {
 	public Connection conn;
 	public Statement stmt = null;
 	private ResultSet rs = null;
-	private Vector data1 = new Vector();
-	private Vector<Integer> data2 = new Vector();
-//	private Vector result;
+	private Vector data1 = new Vector();    //분류명 백터
+	private Vector<Integer> data2 = new Vector(); //분류별 총수량
 	private MyPanel panel = new MyPanel();
 	private JPanel jp =new JPanel();
-
 	public KindPieChart(JPanel jp){
 		this.jp = jp;
 		jp.setLayout(new BorderLayout());
 		jp.add(panel);
 	}
-
 	class MyPanel extends JPanel {
 		private int sum = 0;
 		private Color[] color = { Color.RED, Color.BLUE, Color.YELLOW, Color.PINK, Color.CYAN, Color.ORANGE,
@@ -41,11 +39,11 @@ public class KindPieChart extends JFrame {
 		public MyPanel() {
 			dbclass(); // db연결
 			allData(); // 데이터 받아오기
+			//sum 창고에 보유중인 총 재고 수량
 			for (int i = 0; i < data1.size(); i++) {
-				sum += data2.get(i);
+				sum += data2.get(i);  
 			}
 		}
-
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			int n = 0; //사격형 간격 조절
@@ -59,6 +57,7 @@ public class KindPieChart extends JFrame {
 						(int)(Math.random()*256),(int)(Math.random()*256)));
 				g.fillOval(n, 310 + o, 15, 15); // 사각형
 				g.fillArc(270, 0, 300, 300, (int) start, (int) over);
+				
 				n += 130;
 				start += over;
 				g.setColor(Color.black);
@@ -76,13 +75,9 @@ public class KindPieChart extends JFrame {
 				g.setColor(Color.black);
 				g.setFont(new Font("맑음 고딕", Font.BOLD, 30));
 				g.drawString("재고 종류별 보유 현황", 0,30);
-//				repaint();
 			}
 		}
 	}
-
-// SELECT COUNT(DISTINCT sku_kind) from listdb group by sku_kind; 종류
-//	select sku_kind, SUM(sku_finalnum) as total from listdb group by sku_kind;
 	public void allData() {
 		data1.clear();
 		data2.clear();
@@ -106,7 +101,7 @@ public class KindPieChart extends JFrame {
 	public void dbclass() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); // JDBC 연결
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/myproject", "root", "test123"); 
 			stmt = conn.createStatement();
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로드 오류");
@@ -114,10 +109,4 @@ public class KindPieChart extends JFrame {
 			System.out.println("실행오류");
 		}
 	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-//		new KindPieChart();
-	}
-
 }

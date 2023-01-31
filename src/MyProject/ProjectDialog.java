@@ -25,39 +25,45 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 public class ProjectDialog extends JDialog {
-	private JButton btn1, btn2, btn3, btn4, btn5;
 	private JButton[] menuBtn = new JButton[5];
 	private JPanel menuL, pNorth, pSouth, subMenuContainer;
-	private JLabel modeJl = new JLabel();
-	private JButton back = new JButton("메인화면 돌아가기",new ImageIcon("images/back.png"));
+	private JLabel modeJl = new JLabel(); // 관리자 혹은 작업자 구분 라벨
+	// 처음화면 돌아기기
+	private JButton back = new JButton("메인화면 돌아가기", new ImageIcon("images/back.png"));
+	// 로그아웃 버튼
+	private JButton logoutBtn = new JButton("로그아웃", new ImageIcon("images/logout1.png"));
+	// 테이블 메인 스크롤 창
 	private JScrollPane pCenter;
+	// 서브 버튼
 	private JButton[] subBtn = new JButton[9];
 	private String[] btnname = { "재고현황조회", "입출고 이력조회", "발주서 생성", "입고", "Location정보", "출고오더생성", "출고", "상품정보조회",
 			"ID정보관리" }; // "검색",
+	// 메인메뉴 펼침 닫침 판단
 	private static boolean expand = false;
 	private static boolean expand1 = false;
 	private static boolean expand2 = false;
 	private static boolean expand3 = false;
 	private static boolean expand4 = false;
-	private JButton logoutBtn = new JButton("로그아웃",new ImageIcon("images/logout1.png"));
-	private String loginid;
-	public LoginUi frame;
-	private LoginUi l;
-	public boolean flg = false;
-	private ResultSet rs = null;
 
-	public ProjectDialog() {
-	}
+	// 로그인시 입력 아이디
+	private String loginid;
+	// 상속받은 프레임
+	public LoginUi frame;
+	private ResultSet rs = null;
 
 	public ProjectDialog(LoginUi frame, String title, String loginid) {
 		super(frame, title, true);
+		// 로그인 아이디 상속받아옴
 		this.loginid = loginid;
+		// 프레임 상속받아옴
 		this.frame = frame;
-
+		
+		//서브버튼 익명
 		for (int i = 0; i < subBtn.length; i++) {
 			subBtn[i] = new JButton(btnname[i]);
 			subBtn[i].setBackground(Color.white);
 		}
+		//관리자모드 여부 확인
 		if (frame.ck.isSelected()) {
 			modeJl.setText("관리자 모드");
 		} else {
@@ -73,32 +79,35 @@ public class ProjectDialog extends JDialog {
 			}
 			modeJl.setText(name + "님 환영합니다!");
 		}
+		
+		
 		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 30));
 		modeJl.setSize(300, 200);
 		modeJl.setLocation(90, 20);
-		back.setLocation(75,150);
-		back.setSize(200,40);
+		//메인 화면 돌아기기
+		back.setLocation(75, 150);
+		back.setSize(200, 40);
 		back.setBorderPainted(false);
 		back.setContentAreaFilled(false);
 		back.setFocusPainted(false);
 		back.setOpaque(false);
 		back.setHorizontalAlignment(SwingConstants.LEFT);
 		
-//		modeJl.setFont(new Font("맑은 고딕", Font.BOLD, 20));
-//		modeJl.setSize(200, 50);
-//		modeJl.setLocation(90, 90);
-
 		pNorth = new JPanel();
 		menuL = new JPanel();
 		setBackground(Color.WHITE);
+		//창크기 고정
 		setResizable(false);
 		setLocation(100, 100);
 		setLayout(null);
+		//메인 메뉴 담을 패널
 		menuL.setSize(200, 500);
 		menuL.setLocation(90, 200);
 		menuL.setLayout(new BorderLayout());
 		menuL.setBackground(Color.LIGHT_GRAY);
 
+		
+		//메인 메뉴명 설정
 		menuBtn[0] = new JButton("조회");
 		menuBtn[0].setFont(new Font("맑은 고딕", Font.BOLD, 20));
 		menuBtn[0].setForeground(Color.white);
@@ -125,7 +134,9 @@ public class ProjectDialog extends JDialog {
 		menuBtn[4].setBackground(Color.BLACK);
 
 		pNorth.setLayout(new GridLayout(0, 1));
-
+		
+		//메인 메뉴를 north패널에 담고 각각 열림 담힘 액션리스널를 부가한다
+		//관리자 아니면 id생성기능 제외
 		for (int i = 0; i < menuBtn.length; i++) {
 			if (i == 4 && frame.ck.isSelected()) {
 				pNorth.add(menuBtn[i]);
@@ -140,13 +151,15 @@ public class ProjectDialog extends JDialog {
 					subBtn[j].addActionListener(new ActionHandlerR());
 			}
 		}
-
+		//패널에 각 버튼 추가
 		menuL.add(pNorth, "North");
-
+		
+		
+		//서브 패널 제작
 		subMenuContainer = new JPanel();
 		subMenuContainer.setSize(900, 500);
 		subMenuContainer.setLocation(350, 200);
-		// 초기 화면 미완료건 카운트 창
+		// 서브 패널에 초기 화면 미완료건 카운트 창
 		defPanel();
 		back.addActionListener(new ActionListener() {
 			@Override
@@ -156,13 +169,15 @@ public class ProjectDialog extends JDialog {
 				defPanel();
 			}
 		});
-		
+
 		add(menuL);
 		add(new textPanel());
 		add(modeJl);
 		add(back);
-		logoutBtn.setLocation(1200,150);
-		logoutBtn.setSize(200,40);
+
+		//로그아웃버튼 정의
+		logoutBtn.setLocation(1200, 150);
+		logoutBtn.setSize(200, 40);
 		logoutBtn.setBorderPainted(false);
 		logoutBtn.setContentAreaFilled(false);
 		logoutBtn.setFocusPainted(false);
@@ -176,11 +191,11 @@ public class ProjectDialog extends JDialog {
 				// TODO Auto-generated method stub
 				frame.setVisible(true);
 				ProjectDialog.this.setVisible(false);
-//				frame.removeAll();
-//				repaint();
 			}
 		});
-
+		
+		
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent w) {
@@ -200,8 +215,8 @@ public class ProjectDialog extends JDialog {
 	private class ActionHandlerR implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-//			subMenuContainer.removeAll();
 			for (int i = 0; i < subBtn.length; i++) {
+				//서브버튼 확인 하고 각 클래스에 생성자 제공
 				if (subBtn[i] == e.getSource()) {
 					if (i == 0) {
 						new SubBtnListener(subMenuContainer, "재고현황조회", loginid, frame);
@@ -234,6 +249,8 @@ public class ProjectDialog extends JDialog {
 				}
 				validate();
 			}
+		
+			//메인 메뉴판 클릭시 펼침 닫힘 
 			if (menuBtn[0] == e.getSource()) {
 				expand = !expand;
 				expand1 = false;
@@ -245,7 +262,6 @@ public class ProjectDialog extends JDialog {
 				wind4();
 				wind5();
 				wind1();
-
 			} else if (menuBtn[1] == e.getSource()) {
 				expand = false;
 				expand1 = !expand1;
@@ -307,13 +323,11 @@ public class ProjectDialog extends JDialog {
 			}
 			for (int i = 1; i < 5; i++) {
 				pNorth.add(menuBtn[i]);
-
 			}
 		} else {// 접힘
 			for (int i = 0; i < 2; i++) {
 				pNorth.remove(subBtn[i]);
 			}
-
 		}
 		masterOnoff();
 		validate();
@@ -440,6 +454,7 @@ public class ProjectDialog extends JDialog {
 				pNorth.remove(subBtn[8]);
 			}
 		}
+		//관리자 아니면 설정기능 제외
 		masterOnoff();
 		validate();
 		menuL.repaint();
@@ -452,6 +467,7 @@ public class ProjectDialog extends JDialog {
 		}
 	}
 
+	//초기 서브패널에 화면 정의 미완료 작업건 및 재고 점유 수량 분류별로 통계
 	public void defPanel() {
 		JLabel cal1 = new JLabel(new ImageIcon("images/cal2.png"));
 		JLabel cal2 = new JLabel(new ImageIcon("images/cal2.png"));
@@ -488,9 +504,8 @@ public class ProjectDialog extends JDialog {
 		subMenuContainer.add(nP, BorderLayout.NORTH);
 		subMenuContainer.add(cP, BorderLayout.CENTER);
 		add(subMenuContainer);
-		//파이차트 추가
+		// 파이차트 추가
 		KindPieChart pie = new KindPieChart(cP);
-		
 		validate();
 		repaint();
 	}
@@ -501,7 +516,6 @@ class textPanel extends JPanel {
 		setSize(900, 100);
 		setLocation(380, 5);
 	}
-
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(new Color(132, 203, 52));
@@ -513,5 +527,3 @@ class textPanel extends JPanel {
 	}
 
 }
-
-

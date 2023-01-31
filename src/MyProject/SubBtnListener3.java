@@ -100,7 +100,7 @@ public class SubBtnListener3 extends JFrame {
 		if (text.equals("상품정보조회")) {
 			resetP();
 			locationSetting1();
-////////////////////////////////추가 버튼
+			// 추가 버튼
 			addBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -121,7 +121,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
-////////////////////////////////검색 버튼
+			// 검색 버튼
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -136,7 +136,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
-////////////////////////////////리셋 버튼		
+			// 리셋 버튼
 			resetBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -149,7 +149,7 @@ public class SubBtnListener3 extends JFrame {
 					skukindTf.setEnabled(true);
 				}
 			});
-//////////////////////////////////엑셀 버튼
+			// 엑셀 버튼
 			excelBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -190,7 +190,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
-////////////////////////////////삭제 버튼
+			// 삭제 버튼
 			delBtn.addActionListener(new ActionListener() {
 
 				@Override
@@ -202,7 +202,7 @@ public class SubBtnListener3 extends JFrame {
 					model.setDataVector(result, title);
 				}
 			});
-////////////////////////////////수정 버튼			
+			// 수정 버튼
 			upBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -234,7 +234,7 @@ public class SubBtnListener3 extends JFrame {
 					row = table.getSelectedRow();
 				}
 			});
-////////////////////////////////검색 버튼			
+			// 검색 버튼
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -250,7 +250,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
-////////////////////////////////수정 버튼	
+			// 수정 버튼
 			upBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -261,7 +261,7 @@ public class SubBtnListener3 extends JFrame {
 					tableCheckBox();
 				}
 			});
-////////////////////////////////추가 버튼
+			// 추가 버튼
 			addBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -281,7 +281,7 @@ public class SubBtnListener3 extends JFrame {
 					}
 				}
 			});
-////////////////////////////////삭제 버튼			
+			// 삭제 버튼
 			delBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -297,7 +297,7 @@ public class SubBtnListener3 extends JFrame {
 
 	}
 
-////////////////////////////////상품리스트 조회 세팅
+	// 상품리스트 조회 테이블 세팅
 	public void locationSetting1() {
 		title.clear();
 		table.removeAll();
@@ -346,7 +346,7 @@ public class SubBtnListener3 extends JFrame {
 
 	}
 
-////////////////////////////////작업자 id생성 세팅
+	// 작업자 id생성 테이블 세팅
 	public void locationSetting2() {
 		title.clear();
 		table.removeAll();
@@ -375,8 +375,8 @@ public class SubBtnListener3 extends JFrame {
 //		tc.setCellEditor(table.getDefaultEditor(Boolean.class));
 //		tc.setCellRenderer(table.getDefaultRenderer(Boolean.class));
 
+		// 발주서생성,출고오더생성 권한에 관한 체크박스
 		tableCheckBox();
-
 		JScrollPane sp = new JScrollPane(table);
 		mainP.add(sp, BorderLayout.CENTER);
 
@@ -384,9 +384,6 @@ public class SubBtnListener3 extends JFrame {
 		northP.add(titleCombo);
 		northP.add(searchTf);
 		northP.add(searchBtn);
-		northP.add(upBtn);
-//		northP.add(saveBtn);
-		northP.add(delBtn);
 		mainP.add(northP, "North");
 
 		southP.add(id);
@@ -398,6 +395,8 @@ public class SubBtnListener3 extends JFrame {
 		southP.add(workAge);
 		southP.add(workAgeTf);
 		southP.add(addBtn);
+		southP.add(upBtn);
+		southP.add(delBtn);
 		mainP.add(southP, BorderLayout.SOUTH);
 
 		result = null;
@@ -414,7 +413,7 @@ public class SubBtnListener3 extends JFrame {
 		}
 	};
 
-////////////////////////////전체 패널 리셋
+	// 전체 패널 리셋
 	public void resetP() {
 		mainP.removeAll();
 		northP.removeAll();
@@ -429,7 +428,7 @@ public class SubBtnListener3 extends JFrame {
 		testP.repaint();
 	}
 
-////////////////////////////////추가 메소드
+	// 추가 메소드
 	public void add(String a, String b, String c, String age) {
 		if (text.equals("상품정보조회")) {
 			try {
@@ -456,16 +455,14 @@ public class SubBtnListener3 extends JFrame {
 				pstmtInsert.setBoolean(5, false);
 				pstmtInsert.setBoolean(6, false);
 				pstmtInsert.executeUpdate();
-//				popup = true;
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "이미존재하는 아이디입니다", "에러", JOptionPane.ERROR_MESSAGE);
-//				popup = false;
 				e.printStackTrace();
 			}
 		}
 	}
 
-////////////////////////////////삭제 메소드
+	// 삭제 메소드
 	public void delete(String code) {
 		if (text.equals("상품정보조회")) {
 			try {
@@ -503,7 +500,7 @@ public class SubBtnListener3 extends JFrame {
 
 	}
 
-////////////////////////////////수정 메소드
+	// 수정 메소드
 	public void update(String code, String name, String kind) {
 		if (text.equals("상품정보조회")) {
 			try {
@@ -544,9 +541,7 @@ public class SubBtnListener3 extends JFrame {
 						JOptionPane.showMessageDialog(null, "빈칸을 채줘주세요", "알림", 1);
 					}
 				}
-//				popup1 = true;
 			} catch (Exception e) {
-//				popup1 = false;
 				JOptionPane.showMessageDialog(null, "입력한내용을 학인해주세요", "알림", 1);
 				e.printStackTrace();
 			}
@@ -554,7 +549,7 @@ public class SubBtnListener3 extends JFrame {
 		}
 	}
 
-////////////////////////////////검색 메소드
+	//검색 메소드
 	public Vector search(String search) {
 		data.clear();
 		try {
@@ -610,14 +605,14 @@ public class SubBtnListener3 extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
-////////////////////////////////전체 데이터 가져오기 메소드
+	//전체 데이터 가져오기 메소드
 	public Vector allData() {
 		data.clear();
 		try {
 			rs = l.stmt.executeQuery(
 					"select * from productlist p left join (select sku_code, SUM(sku_finalnum) as total from "
-					+ "listdb group by sku_code) s on p.sku_code = s.sku_code left join(SELECT sku_code, group_CONCAT(sku_location)"
-					+ " AS sum FROM listdb group by sku_code) k on p.sku_code = k.sku_code");
+							+ "listdb group by sku_code) s on p.sku_code = s.sku_code left join(SELECT sku_code, group_CONCAT(sku_location)"
+							+ " AS sum FROM listdb group by sku_code) k on p.sku_code = k.sku_code");
 			while (rs.next()) {
 				Vector in = new Vector<String>(); //
 				String sku_code = rs.getString("sku_code");
@@ -638,7 +633,7 @@ public class SubBtnListener3 extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
-//////////////////////////////// 작업자 아이디정보 가져오기 메소드	
+	// 작업자 아이디정보 가져오기 메소드	
 	public Vector getData() {
 		data.clear();
 		try {
@@ -667,9 +662,8 @@ public class SubBtnListener3 extends JFrame {
 		return data;
 	}
 
-/////////////////////////////////테이블체크박스
+	//테이블체크박스
 	public void tableCheckBox() {
-
 		table.getColumn("발주서생성권한").setCellRenderer(dcr);
 		JCheckBox box1 = new JCheckBox();
 		box1.setHorizontalAlignment(JLabel.CENTER);

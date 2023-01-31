@@ -6,10 +6,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,9 +27,9 @@ public class LoginUi extends JFrame {
 	private MyPanel panel = new MyPanel();
 	private JLabel idjl = new JLabel(new ImageIcon("images/id.png"));
 	private JLabel pwjl = new JLabel(new ImageIcon("images/pw.png"));
-	private JTextField loginTf = new JTextField(10);
-	private JPasswordField pwTf = new JPasswordField(10);
-	private JButton login = new JButton("로그인");
+	private JTextField loginTf = new JTextField(10);  //아이디 입력 필드
+	private JPasswordField pwTf = new JPasswordField(10); //비밀번호 입력 필드
+	private JButton login = new JButton("로 그 인");
 	public JCheckBox ck, radio2;
 	private ButtonGroup g = new ButtonGroup();
 	private ImageIcon image2 = new ImageIcon("images/m1.png");
@@ -52,64 +48,46 @@ public class LoginUi extends JFrame {
 		ck.setLocation(800, 380);
 		ck.setSelected(true);
 
-		// 로그인 정보
+		// 아이디 입력 정보
 		idjl.setLocation(740, 390);
 		idjl.setSize(200, 200);
 		loginTf.setSize(400, 40);
 		loginTf.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		loginTf.setBackground(Color.LIGHT_GRAY);
 		loginTf.setLocation(880, 471);
-
-		loginTf.setText("masterid");
-
+		//비밀번호 입력 정보
 		pwjl.setLocation(740, 460);
 		pwjl.setSize(200, 200);
 		pwTf.setSize(400, 40);
 		pwTf.setFont(new Font("맑음 고딕", Font.BOLD, 20));
 		pwTf.setBackground(Color.LIGHT_GRAY);
 		pwTf.setLocation(880, 540);
-
-		pwTf.setText("123123");
-
-		login.setSize(200, 30);
-		login.setLocation(840, 620);
-
+		//로그인 버튼
+		login.setSize(150, 30);
+		login.setForeground(Color.WHITE);
+		login.setBackground(new Color(73, 182, 155));
+		login.setFont(new Font("맑음 고딕",Font.BOLD,20));
+		login.setLocation(880, 620);
+		//데이터베이스 연결
 		dbclass();
+		
+		//로그인버튼 아이디 비번 확인 
 		login.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				String mode = null;
-				String id = null;
-				String pw = null;
-				if (ck.isSelected())
-					mode = "masterid";
-				else
-					mode = "workerid";
-				dialog = new ProjectDialog(LoginUi.this, "로그인 성공", loginTf.getText());
-				try {
-					rs = stmt.executeQuery("select * from " + mode + " where id = '" + loginTf.getText() + "'");
-					while (rs.next()) {
-						id = rs.getString("id");
-						pw = rs.getString("pw");
-					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				if (loginTf.getText().equals(id) && pwTf.getText().equals(pw)) {
-					setVisible(false);
-					dialog.setVisible(true);
-
-				} else {
-					JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
-				}
-
+				loginAction ();
 			}
 		});
-
-		panel.add(ck);
+		//패스워드 입력후 enter키로 로그인
+		pwTf.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				loginAction ();
+			}
+		});
+		panel.add(ck);  //체크박스 추가
 		panel.add(idjl);
 		panel.add(pwjl);
 		panel.add(loginTf);
@@ -151,12 +129,40 @@ public class LoginUi extends JFrame {
 		}
 
 	}
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new LoginUi();
 	}
 
+	public void loginAction () {
+		String mode = null;
+		String id = null;
+		String pw = null;
+		if (ck.isSelected())
+			mode = "masterid";
+		else
+			mode = "workerid";
+		dialog = new ProjectDialog(LoginUi.this, "로그인 성공", loginTf.getText());
+		try {
+			rs = stmt.executeQuery("select * from " + mode + " where id = '" + loginTf.getText() + "'");
+			while (rs.next()) {
+				id = rs.getString("id");
+				pw = rs.getString("pw");
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		if (loginTf.getText().equals(id) && pwTf.getText().equals(pw)) {
+			setVisible(false);
+			dialog.setVisible(true);
+
+		} else {
+			JOptionPane.showMessageDialog(null, "아이디 비밀번호가 일치하지 않습니다", "로그인실패", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
 	public void dbclass() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
