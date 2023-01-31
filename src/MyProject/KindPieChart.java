@@ -72,12 +72,15 @@ public class KindPieChart extends JFrame {
 					m = 0 ;
 					
 				}
-				g.setColor(Color.black);
-				g.setFont(new Font("맑음 고딕", Font.BOLD, 30));
-				g.drawString("재고 종류별 보유 현황", 0,30);
-				g.setColor(new Color(230,230,230));
-				g.fillOval(370,100 , 100, 100);
 			}
+			g.setColor(Color.black);
+			g.setFont(new Font("맑음 고딕", Font.BOLD, 30));
+			g.drawString("재고 종류별 보유 현황", 0,30);
+			g.setColor(new Color(230,230,230));
+			g.fillOval(370,100 , 100, 100);
+			g.setColor(Color.BLACK);
+			g.setFont(new Font("맑음 고딕", Font.BOLD,18));
+			g.drawString("Total :"+sum,372,160);
 		}
 	}
 	public void allData() {
